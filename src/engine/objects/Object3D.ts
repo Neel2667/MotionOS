@@ -1,8 +1,10 @@
 import { Node } from '../core/Node';
 import { Transform } from '../core/Transform';
+import { v4 as uuidv4 } from 'uuid';
 
 export class Object3D extends Node {
   public name: string = '';
+  public type: string = 'Object3D';
   public transform: Transform;
   public opacity: number = 1.0;
   public visibility: boolean = true;
@@ -11,6 +13,7 @@ export class Object3D extends Node {
   constructor(name: string = 'Object3D') {
     super();
     this.name = name;
+    this.id = uuidv4();
     this.transform = new Transform();
   }
 
@@ -29,6 +32,7 @@ export class Object3D extends Node {
     return {
       id: this.id,
       name: this.name,
+      type: this.type,
       transform: this.transform.serialize(),
       opacity: this.opacity,
       visibility: this.visibility,
@@ -40,6 +44,7 @@ export class Object3D extends Node {
   deserialize(data: any) {
     if (data.id) this.id = data.id;
     if (data.name) this.name = data.name;
+    if (data.type) this.type = data.type;
     if (data.transform) this.transform.deserialize(data.transform);
     if (typeof data.opacity === 'number') this.opacity = data.opacity;
     if (typeof data.visibility === 'boolean') this.visibility = data.visibility;
