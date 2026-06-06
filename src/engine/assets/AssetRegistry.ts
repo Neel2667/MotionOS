@@ -1,63 +1,119 @@
-import { v4 as uuidv4 } from 'uuid';
+import { AssetType } from './AssetMetadata';
 
-export class AssetHandle {
-  constructor(public id: string = uuidv4()) {}
-}
-
-export class AssetDescriptor {
-  public id: string = uuidv4();
-  public hash: string = '';
-  public version: number = 1;
-  public type: string = 'unknown';
-  public dependencies: string[] = [];
-  public metadata: Record<string, any> = {};
-  public uri: string = '';
-
-  constructor(type: string, uri: string) {
-    this.type = type;
-    this.uri = uri;
-  }
+export interface RegistryEntry {
+  type: AssetType;
+  extensions: string[];
+  mimes: string[];
+  category: 'VECTOR' | 'RASTER' | 'VIDEO' | 'FONT' | 'DATA';
 }
 
 export class AssetRegistry {
-  protected assets: Map<string, AssetDescriptor> = new Map();
-  protected loadedData: Map<string, any> = new Map();
-
-  register(descriptor: AssetDescriptor): AssetHandle {
-    this.assets.set(descriptor.id, descriptor);
-    return new AssetHandle(descriptor.id);
-  }
-
-  load(handle: AssetHandle): Promise<any> {
-    const asset = this.assets.get(handle.id);
-    if (!asset) return Promise.reject(`Asset ${handle.id} not found.`);
-    if (this.loadedData.has(handle.id)) return Promise.resolve(this.loadedData.get(handle.id));
-    
-    // Stub for actual loading logic
-    return new Promise((resolve) => {
-      this.loadedData.set(handle.id, { _stubData: true });
-      resolve(this.loadedData.get(handle.id));
-    });
-  }
-
-  unload(handle: AssetHandle): void {
-    this.loadedData.delete(handle.id);
-  }
-
-  invalidate(handle: AssetHandle): void {
-    this.unload(handle);
-    // Logic to update version/hash would go here
-  }
-
-  serialize(): any {
-    return Array.from(this.assets.values()).map(d => ({...d}));
-  }
-
-  deserialize(data: any): void {
-    for (const item of data) {
-      const desc = new AssetDescriptor(item.type, item.uri);
-      Object.assign(desc, item);
-      this.assets.set(desc.id, desc);
+  private entries: Record<AssetType, RegistryEntry> = {
+    PNG: {
+      type: 'PNG',
+      extensions: ['.png'],
+      mimes: ['image/png'],
+      category: 'RASTER'
+    },
+    JPEG: {
+      type: 'JPEG',
+      extensions: ['.jpg', '.jpeg'],
+      mimes: ['image/jpeg'],
+      category: 'RASTER'
+    },
+    WEBP: {
+      type: 'WEBP',
+      extensions: ['.webp'],
+      mimes: ['image/webp'],
+      category: 'RASTER'
+    },
+    GIF: {
+      type: 'GIF',
+      extensions: ['.gif'],
+      mimes: ['image/gif'],
+      category: 'RASTER'
+    },
+    SVG: {
+      type: 'SVG',
+      extensions: ['.svg'],
+      mimes: ['image/svg+xml'],
+      category: 'VECTOR'
+    },
+    PDF: {
+      type: 'PDF',
+      extensions: ['.pdf'],
+      mimes: ['application/pdf'],
+      category: 'VECTOR'
+    },
+    MP4: {
+      type: 'MP4',
+      extensions: ['.mp4'],
+      mimes: ['video/mp4'],
+      category: 'VIDEO'
+    },
+    WEBM: {
+      type: 'WEBM',
+      extensions: ['.webm'],
+      mimes: ['video/webm'],
+      category: 'VIDEO'
+    },
+    TTF: {
+      type: 'TTF',
+      extensions: ['.ttf'],
+      mimes: ['font/ttf', 'application/x-font-ttf'],
+      category: 'FONT'
+    },
+    OTF: {
+      type: 'OTF',
+      extensions: ['.otf'],
+      mimes: ['font/otf', 'application/x-font-opentype'],
+      category: 'FONT'
+    },
+    JSON_DNA: {
+      type: 'JSON_DNA',
+      extensions: ['.dna.json'],
+      mimes: ['application/json'],
+      category: 'DATA'
+    },
+    PROJECT_JSON: {
+      type: 'PROJECT_JSON',
+      extensions: ['.motion.json', '.json'],
+      mimes: ['application/json'],
+      category: 'DATA'
     }
+  };
+
+  public resolveFromFile(fileName: string, mime?: string): AssetType | null {
+    const extension = '.' + fileName.split('.').pop()?.toLowerCase();
+    
+    // 1. Check exact extension matching
+    for (const type in this.entries) {
+      const entry = this.entries[type as AssetType];
+      if (entry.extensions.includes(extension)) {
+        return entry.type;
+      }
+    }
+
+    // 2. Check mime-type matching
+    if (mime) {
+      for (const type in this.entries) {
+        const entry = this.entries[type as AssetType];
+        if (entry.mimes.includes(mime)) {
+          return entry.type;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  public getCategory(type: AssetType): string {
+    return this.entries[type]?.category || 'DATA';
+  }
+
+  public getExtensions(type: AssetType): string[] {
+    return this.entries[type]?.extensions || [];
   }
 }
+
+export const globalAssetRegistry = new AssetRegistry();

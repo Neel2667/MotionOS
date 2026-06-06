@@ -1,11 +1,12 @@
 import { 
   Home, FolderGit2, Edit3, Box, Palette, Dna, 
-  Layers, Clock, Settings, BrainCircuit, Cpu 
+  Layers, Clock, Settings, BrainCircuit, Cpu, Video, RefreshCw, Database
 } from 'lucide-react';
 
 export function Navigation({ currentView, setCurrentView }: { currentView: string, setCurrentView: (v: string) => void }) {
   const navItems = [
     { id: 'HOME', icon: Home, label: 'Home' },
+    { id: 'WORKSPACE', icon: Database, label: 'Database Console' },
     { id: 'PROJECTS', icon: FolderGit2, label: 'Projects' },
     { id: 'AI_DIRECTOR', icon: BrainCircuit, label: 'AI Director' },
     { id: 'COMPOSER', icon: Cpu, label: 'Animation Composer' },
@@ -15,6 +16,8 @@ export function Navigation({ currentView, setCurrentView }: { currentView: strin
     { id: 'DNA', icon: Dna, label: 'Motion DNA' },
     { id: 'SCENE', icon: Layers, label: 'Scene' },
     { id: 'TIMELINE', icon: Clock, label: 'Timeline' },
+    { id: 'EXPORT', icon: Video, label: 'Export Engine' },
+    { id: 'RENDER_QUEUE', icon: RefreshCw, label: 'Render Queue' },
   ];
 
   return (
