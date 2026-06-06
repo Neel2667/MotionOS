@@ -1,48 +1,21 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { useEffect, useRef } from 'react';
-import { createDemo } from './engine/examples/demo';
-import { Engine } from './engine/Engine';
+import { useState } from 'react';
+import { EditorView } from './components/EditorView';
+import { DashboardView } from './components/DashboardView';
+import { Navigation } from './components/Navigation';
+import { AIDirectorView } from './components/AIDirectorView';
 
 export default function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const engineRef = useRef<Engine | null>(null);
-
-  useEffect(() => {
-    if (canvasRef.current && !engineRef.current) {
-      engineRef.current = createDemo(canvasRef.current);
-    }
-    
-    return () => {
-      if (engineRef.current) {
-        engineRef.current.stop();
-        engineRef.current = null;
-      }
-    };
-  }, []);
+  const [currentView, setCurrentView] = useState('AI_DIRECTOR');
 
   return (
-    <div className="w-full h-screen bg-[#111111] overflow-hidden text-white flex flex-col font-sans">
-      <header className="p-4 border-b border-white/10 flex justify-between items-center bg-black/50 backdrop-blur-md z-10 absolute w-full">
-        <h1 className="font-bold text-lg tracking-tight">MotionOS</h1>
-        <div className="text-xs font-mono text-white/50 tracking-wider">ENGINE v0.0.1 (MILESTONE 1)</div>
-      </header>
+    <div className="w-full h-screen bg-[#0d0d0d] overflow-hidden text-neutral-300 flex font-sans selection:bg-indigo-500/30">
+      <Navigation currentView={currentView} setCurrentView={setCurrentView} />
       
-      <main className="flex-1 relative w-full h-full">
-        <canvas 
-          ref={canvasRef} 
-          className="w-full h-full display-block focus:outline-none"
-        />
-        
-        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-white/30 pointer-events-none">
-          <p>ENGINE STATUS: RUNNING</p>
-          <p>RENDERER: WEBGL</p>
-        </div>
+      <main className="flex-1 flex flex-col relative h-full">
+        {currentView === 'EDITOR' && <EditorView />}
+        {currentView === 'AI_DIRECTOR' && <AIDirectorView onPlay={() => setCurrentView('EDITOR')} />}
+        {currentView !== 'EDITOR' && currentView !== 'AI_DIRECTOR' && <DashboardView view={currentView} setCurrentView={setCurrentView} />}
       </main>
     </div>
   );
 }
-
