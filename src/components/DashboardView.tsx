@@ -4,6 +4,11 @@ export function DashboardView({ view, setCurrentView }: { view: string, setCurre
   const statuses = [
     { name: 'Runtime Engine', status: 'Completed', version: 'v0.6.0' },
     { name: 'Autonomous Motion Generator', status: 'Completed', version: 'v1.0.0' },
+    { name: 'Animation Composer', status: 'Completed', version: 'v1.0.0' },
+    { name: 'Motion Graph', status: 'Completed', version: 'v1.0.0' },
+    { name: 'Compiler', status: 'Completed', version: 'v1.0.0' },
+    { name: 'Sequencer', status: 'Completed', version: 'v1.0.0' },
+    { name: 'Constraint Solver', status: 'Completed', version: 'v1.0.0' },
     { name: 'Timeline Engine', status: 'Completed', version: 'v0.7.0' },
     { name: 'AI Director', status: 'Completed', version: 'v0.8.0' },
     { name: 'Motion DNA', status: 'Completed', version: 'v0.8.0' },

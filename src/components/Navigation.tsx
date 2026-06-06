@@ -1,6 +1,6 @@
 import { 
   Home, FolderGit2, Edit3, Box, Palette, Dna, 
-  Layers, Clock, Settings, BrainCircuit 
+  Layers, Clock, Settings, BrainCircuit, Cpu 
 } from 'lucide-react';
 
 export function Navigation({ currentView, setCurrentView }: { currentView: string, setCurrentView: (v: string) => void }) {
@@ -8,6 +8,7 @@ export function Navigation({ currentView, setCurrentView }: { currentView: strin
     { id: 'HOME', icon: Home, label: 'Home' },
     { id: 'PROJECTS', icon: FolderGit2, label: 'Projects' },
     { id: 'AI_DIRECTOR', icon: BrainCircuit, label: 'AI Director' },
+    { id: 'COMPOSER', icon: Cpu, label: 'Animation Composer' },
     { id: 'EDITOR', icon: Edit3, label: 'Editor' },
     { id: 'ASSETS', icon: Box, label: 'Assets' },
     { id: 'MATERIALS', icon: Palette, label: 'Materials' },
