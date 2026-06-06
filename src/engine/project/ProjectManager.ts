@@ -70,6 +70,11 @@ export class ProjectManager {
     return proj;
   }
 
+  public loadProject(proj: Project): void {
+    this.activeProject = proj;
+    this.notify();
+  }
+
   public saveActive(): string {
     if (!this.activeProject) throw new Error('No active project running.');
     this.activeProject.metadata.lastModifiedAt = Date.now();
